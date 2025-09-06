@@ -1,164 +1,193 @@
-{% extends 'base.html' %}
+{% extends 'preview_base.html' %}
+{% load resume_extras %}
 
 {% block title %}Preview Resume - RojgarPatra{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto">
-    <div class="bg-white rounded-lg shadow-md p-8" style="font-family: Arial, sans-serif;">
-        <!-- Header -->
-        <div class="text-center border-b-2 border-gray-300 pb-6 mb-6">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ resume.full_name }}</h1>
-            <div class="text-gray-700 space-y-1">
+<div class="page">
+    <div class="page-content pdf-sim">
+        <style>
+            /* Base to match PDF */
+            .pdf-sim { font-family: Arial, Helvetica, sans-serif; font-size: 12px; line-height: 1.4; color: #333; }
+            .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 20px; }
+            .header h1 { font-size: 20px; font-weight: 700; margin: 0 0 8px 0; color: #000; }
+            .contact-info { font-size: 11px; line-height: 1.3; }
+            .contact-info p { margin: 2px 0; }
+            .section { margin-bottom: 18px; }
+            .section-title { font-size: 14px; font-weight: 700; color: #000; border-bottom: 1px solid #333; padding-bottom: 2px; margin-bottom: 8px; text-transform: uppercase; }
+            .entry { margin-bottom: 12px; }
+            .entry:last-child { margin-bottom: 0; }
+            .entry-title { font-weight: 700; font-size: 12px; }
+            .entry-company { font-size: 11px; color: #555; }
+            .entry-date { font-size: 10px; color: #666; text-align: right; white-space: nowrap; }
+            .entry-description { font-size: 11px; line-height: 1.3; margin-top: 4px; }
+            .skills-list { font-size: 11px; line-height: 1.4; }
+            .bullet-point { margin-left: 15px; text-indent: -15px; }
+            .flex-container { width: 100%; display: table; }
+            .flex-left { display: table-cell; width: 70%; vertical-align: top; }
+            .flex-right { display: table-cell; width: 30%; vertical-align: top; text-align: right; }
+        </style>
+
+        <!-- Header (matches PDF) -->
+        <div class="header">
+            <h1>{{ resume.full_name }}</h1>
+            <div class="contact-info">
                 <p>{{ resume.address }}</p>
                 <p>{{ resume.phone }} | {{ resume.email }}</p>
                 {% if resume.linkedin_url or resume.github_url or resume.portfolio_url %}
-                    <div class="flex justify-center space-x-4 mt-2">
-                        {% if resume.linkedin_url %}
-                            <span>LinkedIn: {{ resume.linkedin_url }}</span>
-                        {% endif %}
-                        {% if resume.github_url %}
-                            <span>GitHub: {{ resume.github_url }}</span>
-                        {% endif %}
-                        {% if resume.portfolio_url %}
-                            <span>Portfolio: {{ resume.portfolio_url }}</span>
-                        {% endif %}
-                    </div>
+                    <p>
+                        {% if resume.linkedin_url %}LinkedIn: {{ resume.linkedin_url }}{% endif %}
+                        {% if resume.github_url %}{% if resume.linkedin_url %} | {% endif %}GitHub: {{ resume.github_url }}{% endif %}
+                        {% if resume.portfolio_url %}{% if resume.linkedin_url or resume.github_url %} | {% endif %}Portfolio: {{ resume.portfolio_url }}{% endif %}
+                    </p>
                 {% endif %}
             </div>
         </div>
-        
-        <!-- Skills -->
-        <div class="mb-6">
-            <h2 class="text-lg font-bold text-gray-900 border-b border-gray-300 pb-1 mb-3">SKILLS</h2>
-            <p class="text-gray-700">{{ resume.skills }}</p>
+
+        <!-- Skills (matches PDF) -->
+        <div class="section">
+            <div class="section-title">Skills</div>
+            <div class="skills-list">
+                {% for skill in resume.skills_list %}
+                    <span class="bullet-point">• {{ skill }}</span>{% if not forloop.last %}<br>{% endif %}
+                {% endfor %}
+            </div>
         </div>
-        
+
         <!-- Education -->
         {% if resume.education.all %}
-            <div class="mb-6">
-                <h2 class="text-lg font-bold text-gray-900 border-b border-gray-300 pb-1 mb-3">EDUCATION</h2>
+            <div class="section">
+                <div class="section-title">Education</div>
                 {% for education in resume.education.all %}
-                    <div class="mb-3">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="font-semibold text-gray-900">{{ education.degree }}</h3>
-                                <p class="text-gray-700">{{ education.institution }}</p>
-                                {% if education.field_of_study %}
-                                    <p class="text-gray-600">{{ education.field_of_study }}</p>
-                                {% endif %}
+                    <div class="entry">
+                        <div class="flex-container">
+                            <div class="flex-left">
+                                <div class="entry-title">{{ education.degree }}</div>
+                                <div class="entry-company">{{ education.institution }}</div>
+                                {% if education.field_of_study %}<div class="entry-company">{{ education.field_of_study }}</div>{% endif %}
+                                {% if education.grade %}<div class="entry-company">Grade: {{ education.grade }}</div>{% endif %}
                             </div>
-                            <div class="text-right text-gray-600">
-                                <p>{{ education.start_date|date:"M Y" }} - {% if education.is_current %}Present{% else %}{{ education.end_date|date:"M Y" }}{% endif %}</p>
-                                {% if education.grade %}
-                                    <p>{{ education.grade }}</p>
-                                {% endif %}
+                            <div class="flex-right">
+                                <div class="entry-date">
+                                    {% if education.start_date %}{{ education.start_date|date:"M Y" }}{% endif %}
+                                    {% if education.is_current %} - Present{% elif education.end_date %} - {{ education.end_date|date:"M Y" }}{% endif %}
+                                </div>
                             </div>
                         </div>
-                        {% if education.description %}
-                            <p class="text-gray-700 mt-1">{{ education.description }}</p>
+                        {% if education.description %}<div class="entry-description">{{ education.description }}</div>{% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Work Experience -->
+        {% if resume.work_experience.all %}
+            <div class="section">
+                <div class="section-title">Work Experience</div>
+                {% for work in resume.work_experience.all %}
+                    <div class="entry">
+                        <div class="flex-container">
+                            <div class="flex-left">
+                                <div class="entry-title">{{ work.position }}</div>
+                                <div class="entry-company">{{ work.company }}{% if work.location %}, {{ work.location }}{% endif %}</div>
+                            </div>
+                            <div class="flex-right">
+                                <div class="entry-date">
+                                    {% if work.start_date %}{{ work.start_date|date:"M Y" }}{% endif %}
+                                    {% if work.is_current %} - Present{% elif work.end_date %} - {{ work.end_date|date:"M Y" }}{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% if work.description %}
+                            <div class="entry-description">
+                                {% for line in work.description|linebreaksbr|split:"<br />" %}
+                                    {% if line.strip %}<div class="bullet-point">• {{ line|safe }}</div>{% endif %}
+                                {% endfor %}
+                            </div>
                         {% endif %}
                     </div>
                 {% endfor %}
             </div>
         {% endif %}
-        
-        <!-- Work Experience -->
-        {% if resume.work_experience.all %}
-            <div class="mb-6">
-                <h2 class="text-lg font-bold text-gray-900 border-b border-gray-300 pb-1 mb-3">WORK EXPERIENCE</h2>
-                {% for work in resume.work_experience.all %}
-                    <div class="mb-4">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="font-semibold text-gray-900">{{ work.position }}</h3>
-                                <p class="text-gray-700">{{ work.company }}{% if work.location %}, {{ work.location }}{% endif %}</p>
-                            </div>
-                            <div class="text-right text-gray-600">
-                                <p>{{ work.start_date|date:"M Y" }} - {% if work.is_current %}Present{% else %}{{ work.end_date|date:"M Y" }}{% endif %}</p>
-                            </div>
-                        </div>
-                        <div class="text-gray-700 mt-2 whitespace-pre-line">{{ work.description }}</div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-        
+
         <!-- Extracurricular Activities -->
         {% if resume.extracurricular_activities.all %}
-            <div class="mb-6">
-                <h2 class="text-lg font-bold text-gray-900 border-b border-gray-300 pb-1 mb-3">EXTRACURRICULAR ACTIVITIES</h2>
+            <div class="section">
+                <div class="section-title">Extracurricular Activities</div>
                 {% for activity in resume.extracurricular_activities.all %}
-                    <div class="mb-3">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="font-semibold text-gray-900">{{ activity.title }}</h3>
-                                {% if activity.organization %}
-                                    <p class="text-gray-700">{{ activity.organization }}</p>
-                                {% endif %}
+                    <div class="entry">
+                        <div class="flex-container">
+                            <div class="flex-left">
+                                <div class="entry-title">{{ activity.title }}</div>
+                                {% if activity.organization %}<div class="entry-company">{{ activity.organization }}</div>{% endif %}
                             </div>
-                            <div class="text-right text-gray-600">
-                                <p>{{ activity.start_date|date:"M Y" }} - {% if activity.is_current %}Present{% else %}{{ activity.end_date|date:"M Y" }}{% endif %}</p>
+                            <div class="flex-right">
+                                <div class="entry-date">
+                                    {% if activity.start_date %}{{ activity.start_date|date:"M Y" }}{% endif %}
+                                    {% if activity.is_current %} - Present{% elif activity.end_date %} - {{ activity.end_date|date:"M Y" }}{% endif %}
+                                </div>
                             </div>
                         </div>
-                        <p class="text-gray-700 mt-1">{{ activity.description }}</p>
+                        {% if activity.description %}<div class="entry-description">{{ activity.description }}</div>{% endif %}
                     </div>
                 {% endfor %}
             </div>
         {% endif %}
 
         {% if resume.certifications.all %}
-            <div class="mb-6">
-                <h2 class="text-lg font-bold text-gray-900 border-b border-gray-300 pb-1 mb-3">CERTIFICATIONS</h2>
+            <div class="section">
+                <div class="section-title">Certifications</div>
                 {% for cert in resume.certifications.all %}
-                    <div class="mb-3">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="font-semibold text-gray-900">{{ cert.title }}</h3>
-                                {% if cert.issuer %}<p class="text-gray-700">{{ cert.issuer }}</p>{% endif %}
-                                {% if cert.credential_id %}<p class="text-gray-600 text-sm">ID: {{ cert.credential_id }}</p>{% endif %}
+                    <div class="entry">
+                        <div class="flex-container">
+                            <div class="flex-left">
+                                <div class="entry-title">{{ cert.title }}</div>
+                                {% if cert.issuer %}<div class="entry-company">{{ cert.issuer }}</div>{% endif %}
+                                {% if cert.credential_id %}<div class="entry-company">ID: {{ cert.credential_id }}</div>{% endif %}
+                                {% if cert.credential_url %}<div class="entry-company">{{ cert.credential_url }}</div>{% endif %}
                             </div>
-                            <div class="text-right text-gray-600">
-                                <p>{% if cert.issue_date %}{{ cert.issue_date|date:"M Y" }}{% endif %}{% if cert.expiration_date %} - {{ cert.expiration_date|date:"M Y" }}{% endif %}</p>
+                            <div class="flex-right">
+                                <div class="entry-date">
+                                    {% if cert.issue_date %}{{ cert.issue_date|date:"M Y" }}{% endif %}
+                                    {% if cert.expiration_date %} - {{ cert.expiration_date|date:"M Y" }}{% endif %}
+                                </div>
                             </div>
                         </div>
-                        {% if cert.description %}<p class="text-gray-700 mt-1">{{ cert.description }}</p>{% endif %}
+                        {% if cert.description %}<div class="entry-description">{{ cert.description }}</div>{% endif %}
                     </div>
                 {% endfor %}
             </div>
         {% endif %}
 
         {% if resume.projects.all %}
-            <div class="mb-6">
-                <h2 class="text-lg font-bold text-gray-900 border-b border-gray-300 pb-1 mb-3">PROJECTS</h2>
+            <div class="section">
+                <div class="section-title">Projects</div>
                 {% for project in resume.projects.all %}
-                    <div class="mb-4">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="font-semibold text-gray-900">{{ project.name }}</h3>
-                                {% if project.role %}<p class="text-gray-700">{{ project.role }}</p>{% endif %}
-                                {% if project.link %}<p class="text-gray-700">{{ project.link }}</p>{% endif %}
+                    <div class="entry">
+                        <div class="flex-container">
+                            <div class="flex-left">
+                                <div class="entry-title">{{ project.name }}</div>
+                                {% if project.role %}<div class="entry-company">{{ project.role }}</div>{% endif %}
+                                {% if project.link %}<div class="entry-company">{{ project.link }}</div>{% endif %}
+                                {% if project.technologies %}<div class="entry-company">Tech: {{ project.technologies }}</div>{% endif %}
                             </div>
-                            <div class="text-right text-gray-600">
-                                <p>{% if project.start_date %}{{ project.start_date|date:"M Y" }}{% endif %}{% if project.end_date %} - {{ project.end_date|date:"M Y" }}{% endif %}</p>
+                            <div class="flex-right">
+                                <div class="entry-date">
+                                    {% if project.start_date %}{{ project.start_date|date:"M Y" }}{% endif %}
+                                    {% if project.end_date %} - {{ project.end_date|date:"M Y" }}{% endif %}
+                                </div>
                             </div>
                         </div>
-                        {% if project.technologies %}<p class="text-gray-700 mt-1">Tech: {{ project.technologies }}</p>{% endif %}
-                        {% if project.description %}<div class="text-gray-700 mt-2 whitespace-pre-line">{{ project.description }}</div>{% endif %}
+                        {% if project.description %}<div class="entry-description">{{ project.description }}</div>{% endif %}
                     </div>
                 {% endfor %}
             </div>
         {% endif %}
     </div>
     
-    <div class="text-center mt-6">
-        <a href="{% url 'resumes:download_pdf' resume.id %}" 
-           class="bg-primary text-white px-6 py-2 rounded-md hover:bg-indigo-600 mr-4">
-            Download PDF
-        </a>
-        <a href="{% url 'resumes:detail' resume.id %}" 
-           class="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600">
-            Back to Resume
-        </a>
+    <div class="actions">
+        <a href="{% url 'resumes:download_pdf' resume.id %}" class="btn btn-primary" style="margin-right: 8px;">Download PDF</a>
+        <a href="{% url 'resumes:detail' resume.id %}" class="btn btn-secondary">Back to Resume</a>
     </div>
 </div>
 {% endblock %}

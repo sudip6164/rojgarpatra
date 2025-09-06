@@ -165,4 +165,4 @@ def download_pdf(request, resume_id):
     filename = f"{resume.full_name.replace(' ', '_')}_Resume.pdf"
     
     # Generate and return PDF
-    return generate_pdf('resumes/pdf_template.html', context, filename)
+    return generate_pdf('resumes/pdf_template.html', context, filename, request=request)
