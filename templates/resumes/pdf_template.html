@@ -104,11 +104,6 @@
             text-indent: -15px;
         }
         
-        .bullet-point:before {
-            content: "• ";
-            font-weight: bold;
-        }
-        
         /* Flexbox alternative for better PDF support */
         .flex-container {
             width: 100%;
@@ -151,7 +146,7 @@
         <div class="section-title">Skills</div>
         <div class="skills-list">
             {% for skill in resume.skills_list %}
-                <span class="bullet-point">{{ skill }}</span>{% if not forloop.last %}<br>{% endif %}
+                <span class="bullet-point">• {{ skill }}</span>{% if not forloop.last %}<br>{% endif %}
             {% endfor %}
         </div>
     </div>
@@ -207,7 +202,7 @@
                     <div class="entry-description">
                         {% for line in work.description|linebreaksbr|split:"<br />" %}
                             {% if line.strip %}
-                                <div class="bullet-point">{{ line|safe }}</div>
+                                <div class="bullet-point">• {{ line|safe }}</div>
                             {% endif %}
                         {% endfor %}
                     </div>

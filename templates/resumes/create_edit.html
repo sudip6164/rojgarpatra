@@ -13,6 +13,11 @@
         
         <form method="post" id="resume-form" class="space-y-8">
             {% csrf_token %}
+            {% if form.errors %}
+                <div class="p-3 rounded bg-red-50 text-red-700 border border-red-200">
+                    Please fix the errors below.
+                </div>
+            {% endif %}
             
             <!-- Basic Information -->
             <div class="border-b border-gray-200 pb-6">
@@ -121,6 +126,11 @@
                 </div>
                 <div id="education-formset">
                     {{ education_formset.management_form }}
+                    {% if education_formset.non_form_errors %}
+                        <div class="p-2 mb-3 rounded bg-red-50 text-red-700 border border-red-200">
+                            {{ education_formset.non_form_errors }}
+                        </div>
+                    {% endif %}
                     {% for form in education_formset %}
                         <div class="education-form border border-gray-200 rounded-md p-4 mb-4 relative">
                             <button type="button" class="absolute top-2 right-2 text-red-600 text-sm js-remove-education" title="Remove">
@@ -129,15 +139,26 @@
                             {% for hidden in form.hidden_fields %}
                                 {{ hidden }}
                             {% endfor %}
+                            {% if form.non_field_errors %}
+                                <div class="p-2 mb-3 rounded bg-red-50 text-red-700 border border-red-200">
+                                    {{ form.non_field_errors }}
+                                </div>
+                            {% endif %}
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Institution</label>
                                     {{ form.institution }}
+                                    {% if form.institution.errors %}
+                                        <p class="text-red-600 text-sm mt-1">{{ form.institution.errors.0 }}</p>
+                                    {% endif %}
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Degree</label>
                                     {{ form.degree }}
+                                    {% if form.degree.errors %}
+                                        <p class="text-red-600 text-sm mt-1">{{ form.degree.errors.0 }}</p>
+                                    {% endif %}
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Field of Study</label>
@@ -150,6 +171,9 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
                                     {{ form.start_date }}
+                                    {% if form.start_date.errors %}
+                                        <p class="text-red-600 text-sm mt-1">{{ form.start_date.errors.0 }}</p>
+                                    {% endif %}
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
@@ -189,6 +213,11 @@
                 </div>
                 <div id="work-formset">
                     {{ work_formset.management_form }}
+                    {% if work_formset.non_form_errors %}
+                        <div class="p-2 mb-3 rounded bg-red-50 text-red-700 border border-red-200">
+                            {{ work_formset.non_form_errors }}
+                        </div>
+                    {% endif %}
                     {% for form in work_formset %}
                         <div class="work-form border border-gray-200 rounded-md p-4 mb-4 relative">
                             <button type="button" class="absolute top-2 right-2 text-red-600 text-sm js-remove-work" title="Remove">
@@ -197,15 +226,26 @@
                             {% for hidden in form.hidden_fields %}
                                 {{ hidden }}
                             {% endfor %}
+                            {% if form.non_field_errors %}
+                                <div class="p-2 mb-3 rounded bg-red-50 text-red-700 border border-red-200">
+                                    {{ form.non_field_errors }}
+                                </div>
+                            {% endif %}
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Company</label>
                                     {{ form.company }}
+                                    {% if form.company.errors %}
+                                        <p class="text-red-600 text-sm mt-1">{{ form.company.errors.0 }}</p>
+                                    {% endif %}
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Position</label>
                                     {{ form.position }}
+                                    {% if form.position.errors %}
+                                        <p class="text-red-600 text-sm mt-1">{{ form.position.errors.0 }}</p>
+                                    {% endif %}
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
@@ -215,6 +255,9 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
                                     {{ form.start_date }}
+                                    {% if form.start_date.errors %}
+                                        <p class="text-red-600 text-sm mt-1">{{ form.start_date.errors.0 }}</p>
+                                    {% endif %}
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
@@ -229,6 +272,9 @@
                                 <div class="md:col-span-2">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
                                     {{ form.description }}
+                                    {% if form.description.errors %}
+                                        <p class="text-red-600 text-sm mt-1">{{ form.description.errors.0 }}</p>
+                                    {% endif %}
                                 </div>
                                 {% if not is_create %}
                                     <div class="md:col-span-2">
@@ -254,6 +300,11 @@
                 </div>
                 <div id="activity-formset">
                     {{ activity_formset.management_form }}
+                    {% if activity_formset.non_form_errors %}
+                        <div class="p-2 mb-3 rounded bg-red-50 text-red-700 border border-red-200">
+                            {{ activity_formset.non_form_errors }}
+                        </div>
+                    {% endif %}
                     {% for form in activity_formset %}
                         <div class="activity-form border border-gray-200 rounded-md p-4 mb-4 relative">
                             <button type="button" class="absolute top-2 right-2 text-red-600 text-sm js-remove-activity" title="Remove">
@@ -262,11 +313,19 @@
                             {% for hidden in form.hidden_fields %}
                                 {{ hidden }}
                             {% endfor %}
+                            {% if form.non_field_errors %}
+                                <div class="p-2 mb-3 rounded bg-red-50 text-red-700 border border-red-200">
+                                    {{ form.non_field_errors }}
+                                </div>
+                            {% endif %}
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
                                     {{ form.title }}
+                                    {% if form.title.errors %}
+                                        <p class="text-red-600 text-sm mt-1">{{ form.title.errors.0 }}</p>
+                                    {% endif %}
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Organization</label>
@@ -275,6 +334,9 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
                                     {{ form.start_date }}
+                                    {% if form.start_date.errors %}
+                                        <p class="text-red-600 text-sm mt-1">{{ form.start_date.errors.0 }}</p>
+                                    {% endif %}
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
@@ -289,6 +351,9 @@
                                 <div class="md:col-span-2">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
                                     {{ form.description }}
+                                    {% if form.description.errors %}
+                                        <p class="text-red-600 text-sm mt-1">{{ form.description.errors.0 }}</p>
+                                    {% endif %}
                                 </div>
                                 {% if not is_create %}
                                     <div class="md:col-span-2">
@@ -321,12 +386,14 @@
 <script>
 // Dynamic formset handling
 document.addEventListener('DOMContentLoaded', function() {
-    // Map logical types to Django formset prefixes
-    const PREFIX = {
-        education: 'education_set',
-        work: 'workexperience_set',
-        activity: 'extracurricularactivity_set',
-    };
+    function getFormsetCtx(type) {
+        const container = document.getElementById(type + '-formset');
+        if (!container) return null;
+        const totalInput = container.querySelector('input[name$="-TOTAL_FORMS"]');
+        if (!totalInput) return null;
+        const prefix = totalInput.name.replace(/-TOTAL_FORMS$/, '');
+        return { container, totalInput, prefix };
+    }
     // Add education form
     document.getElementById('add-education').addEventListener('click', function() {
         addFormsetForm('education');
@@ -343,22 +410,22 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     function addFormsetForm(formsetType) {
-        const formsetDiv = document.getElementById(formsetType + '-formset');
-        const totalForms = document.getElementById('id_' + PREFIX[formsetType] + '-TOTAL_FORMS');
-        if (!formsetDiv || !totalForms) return;
-        const formNum = parseInt(totalForms.value);
-        const forms = formsetDiv.querySelectorAll('.' + formsetType + '-form');
+        const ctx = getFormsetCtx(formsetType);
+        if (!ctx) return;
+        const { container, totalInput, prefix } = ctx;
+        const formNum = parseInt(totalInput.value);
+        const forms = container.querySelectorAll('.' + formsetType + '-form');
+        if (forms.length === 0) return;
         const lastForm = forms[forms.length - 1];
-        if (!lastForm) return;
         const newForm = lastForm.cloneNode(true);
 
-        // Replace indices using the Django formset prefix
-        const formRegex = new RegExp(PREFIX[formsetType] + '-(\\d+)-', 'g');
-        newForm.innerHTML = newForm.innerHTML.replace(formRegex, PREFIX[formsetType] + '-' + formNum + '-');
+        // Replace indices (names, ids, labels)
+        const formRegex = new RegExp(prefix + '-(\\d+)-', 'g');
+        newForm.innerHTML = newForm.innerHTML.replace(formRegex, prefix + '-' + formNum + '-');
 
         // Clear input values
         newForm.querySelectorAll('input, textarea, select').forEach(function(input) {
-            if (input.name && /-id$/.test(input.name)) {
+            if (/-id$/.test(input.name)) {
                 input.value = '';
             } else if (input.type === 'checkbox') {
                 input.checked = false;
@@ -367,20 +434,20 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        formsetDiv.appendChild(newForm);
-        totalForms.value = formNum + 1;
+        container.appendChild(newForm);
+        totalInput.value = formNum + 1;
     }
 
     function reindexForms(formsetType) {
-        const formsetDiv = document.getElementById(formsetType + '-formset');
-        const totalForms = document.getElementById('id_' + PREFIX[formsetType] + '-TOTAL_FORMS');
-        if (!formsetDiv || !totalForms) return;
-        const forms = formsetDiv.querySelectorAll('.' + formsetType + '-form');
+        const ctx = getFormsetCtx(formsetType);
+        if (!ctx) return;
+        const { container, totalInput, prefix } = ctx;
+        const forms = container.querySelectorAll('.' + formsetType + '-form');
         forms.forEach(function(formEl, index) {
-            const formRegex = new RegExp(PREFIX[formsetType] + '-(\\d+)-', 'g');
-            formEl.innerHTML = formEl.innerHTML.replace(formRegex, PREFIX[formsetType] + '-' + index + '-');
+            const formRegex = new RegExp(prefix + '-(\\d+)-', 'g');
+            formEl.innerHTML = formEl.innerHTML.replace(formRegex, prefix + '-' + index + '-');
         });
-        totalForms.value = forms.length;
+        totalInput.value = forms.length;
     }
 
     function removeForm(buttonEl, formsetType) {
