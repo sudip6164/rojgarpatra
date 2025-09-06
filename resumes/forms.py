@@ -175,13 +175,13 @@ class ExtracurricularActivityForm(forms.ModelForm):
 
 # Formsets for dynamic forms
 EducationFormSet = inlineformset_factory(
-    Resume, Education, form=EducationForm, extra=1, can_delete=True
+    Resume, Education, form=EducationForm, extra=0, can_delete=True
 )
 
 WorkExperienceFormSet = inlineformset_factory(
-    Resume, WorkExperience, form=WorkExperienceForm, extra=1, can_delete=True
+    Resume, WorkExperience, form=WorkExperienceForm, extra=0, can_delete=True
 )
 
 ExtracurricularActivityFormSet = inlineformset_factory(
-    Resume, ExtracurricularActivity, form=ExtracurricularActivityForm, extra=1, can_delete=True
+    Resume, ExtracurricularActivity, form=ExtracurricularActivityForm, extra=0, can_delete=True
 )
