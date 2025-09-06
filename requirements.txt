@@ -1,0 +1,5 @@
+Django==4.2.7
+xhtml2pdf>=0.2.12
+Pillow==10.1.0
+reportlab>=4.0.4
+python-dotenv>=1.0.0

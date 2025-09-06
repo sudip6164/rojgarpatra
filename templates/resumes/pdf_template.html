@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+{% load resume_extras %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ resume.full_name }} - Resume</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0.75in;
+        }
+        
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0 0 8px 0;
+            color: #000;
+        }
+        
+        .contact-info {
+            font-size: 11px;
+            line-height: 1.3;
+        }
+        
+        .contact-info p {
+            margin: 2px 0;
+        }
+        
+        .section {
+            margin-bottom: 18px;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #000;
+            border-bottom: 1px solid #333;
+            padding-bottom: 2px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        
+        .entry {
+            margin-bottom: 12px;
+        }
+        
+        .entry:last-child {
+            margin-bottom: 0;
+        }
+        
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 3px;
+        }
+        
+        .entry-title {
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .entry-company {
+            font-size: 11px;
+            color: #555;
+        }
+        
+        .entry-date {
+            font-size: 10px;
+            color: #666;
+            text-align: right;
+            white-space: nowrap;
+        }
+        
+        .entry-description {
+            font-size: 11px;
+            line-height: 1.3;
+            margin-top: 4px;
+        }
+        
+        .skills-list {
+            font-size: 11px;
+            line-height: 1.4;
+        }
+        
+        .bullet-point {
+            margin-left: 15px;
+            text-indent: -15px;
+        }
+        
+        .bullet-point:before {
+            content: "• ";
+            font-weight: bold;
+        }
+        
+        /* Flexbox alternative for better PDF support */
+        .flex-container {
+            width: 100%;
+            display: table;
+        }
+        
+        .flex-left {
+            display: table-cell;
+            width: 70%;
+            vertical-align: top;
+        }
+        
+        .flex-right {
+            display: table-cell;
+            width: 30%;
+            vertical-align: top;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>{{ resume.full_name }}</h1>
+        <div class="contact-info">
+            <p>{{ resume.address }}</p>
+            <p>{{ resume.phone }} | {{ resume.email }}</p>
+            {% if resume.linkedin_url or resume.github_url or resume.portfolio_url %}
+                <p>
+                    {% if resume.linkedin_url %}LinkedIn: {{ resume.linkedin_url }}{% endif %}
+                    {% if resume.github_url %}{% if resume.linkedin_url %} | {% endif %}GitHub: {{ resume.github_url }}{% endif %}
+                    {% if resume.portfolio_url %}{% if resume.linkedin_url or resume.github_url %} | {% endif %}Portfolio: {{ resume.portfolio_url }}{% endif %}
+                </p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Skills -->
+    <div class="section">
+        <div class="section-title">Skills</div>
+        <div class="skills-list">
+            {% for skill in resume.skills_list %}
+                <span class="bullet-point">{{ skill }}</span>{% if not forloop.last %}<br>{% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Education -->
+    {% if resume.education.all %}
+        <div class="section">
+            <div class="section-title">Education</div>
+            {% for education in resume.education.all %}
+                <div class="entry">
+                    <div class="flex-container">
+                        <div class="flex-left">
+                            <div class="entry-title">{{ education.degree }}</div>
+                            <div class="entry-company">{{ education.institution }}</div>
+                            {% if education.field_of_study %}
+                                <div class="entry-company">{{ education.field_of_study }}</div>
+                            {% endif %}
+                            {% if education.grade %}
+                                <div class="entry-company">Grade: {{ education.grade }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="flex-right">
+                            <div class="entry-date">
+                                {{ education.start_date|date:"M Y" }} - {% if education.is_current %}Present{% else %}{{ education.end_date|date:"M Y" }}{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% if education.description %}
+                        <div class="entry-description">{{ education.description }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <!-- Work Experience -->
+    {% if resume.work_experience.all %}
+        <div class="section">
+            <div class="section-title">Work Experience</div>
+            {% for work in resume.work_experience.all %}
+                <div class="entry">
+                    <div class="flex-container">
+                        <div class="flex-left">
+                            <div class="entry-title">{{ work.position }}</div>
+                            <div class="entry-company">{{ work.company }}{% if work.location %}, {{ work.location }}{% endif %}</div>
+                        </div>
+                        <div class="flex-right">
+                            <div class="entry-date">
+                                {{ work.start_date|date:"M Y" }} - {% if work.is_current %}Present{% else %}{{ work.end_date|date:"M Y" }}{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="entry-description">
+                        {% for line in work.description|linebreaksbr|split:"<br />" %}
+                            {% if line.strip %}
+                                <div class="bullet-point">{{ line|safe }}</div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <!-- Extracurricular Activities -->
+    {% if resume.extracurricular_activities.all %}
+        <div class="section">
+            <div class="section-title">Extracurricular Activities</div>
+            {% for activity in resume.extracurricular_activities.all %}
+                <div class="entry">
+                    <div class="flex-container">
+                        <div class="flex-left">
+                            <div class="entry-title">{{ activity.title }}</div>
+                            {% if activity.organization %}
+                                <div class="entry-company">{{ activity.organization }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="flex-right">
+                            <div class="entry-date">
+                                {{ activity.start_date|date:"M Y" }} - {% if activity.is_current %}Present{% else %}{{ activity.end_date|date:"M Y" }}{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="entry-description">{{ activity.description }}</div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</body>
+</html>

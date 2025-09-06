@@ -1,0 +1,85 @@
+/* Print-specific styles for resumes */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0.75in;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 12pt;
+    line-height: 1.4;
+    color: #000;
+    background: white;
+  }
+
+  .no-print,
+  .navbar,
+  .footer,
+  button,
+  .btn,
+  nav,
+  .alert {
+    display: none !important;
+  }
+
+  .container,
+  .max-w-4xl {
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .bg-white,
+  .rounded-lg,
+  .shadow-sm {
+    background: white !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: #000 !important;
+    page-break-after: avoid;
+  }
+
+  p,
+  li {
+    orphans: 3;
+    widows: 3;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+
+  .no-page-break {
+    page-break-inside: avoid;
+  }
+
+  a {
+    color: #000 !important;
+    text-decoration: none !important;
+  }
+
+  .text-primary,
+  .text-indigo-600 {
+    color: #000 !important;
+  }
+
+  .border-b,
+  .border-t {
+    border-color: #000 !important;
+  }
+}

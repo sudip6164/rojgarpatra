@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Preview Resume - RojgarPatra{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-lg shadow-md p-8" style="font-family: Arial, sans-serif;">
+        <!-- Header -->
+        <div class="text-center border-b-2 border-gray-300 pb-6 mb-6">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ resume.full_name }}</h1>
+            <div class="text-gray-700 space-y-1">
+                <p>{{ resume.address }}</p>
+                <p>{{ resume.phone }} | {{ resume.email }}</p>
+                {% if resume.linkedin_url or resume.github_url or resume.portfolio_url %}
+                    <div class="flex justify-center space-x-4 mt-2">
+                        {% if resume.linkedin_url %}
+                            <span>LinkedIn: {{ resume.linkedin_url }}</span>
+                        {% endif %}
+                        {% if resume.github_url %}
+                            <span>GitHub: {{ resume.github_url }}</span>
+                        {% endif %}
+                        {% if resume.portfolio_url %}
+                            <span>Portfolio: {{ resume.portfolio_url }}</span>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Skills -->
+        <div class="mb-6">
+            <h2 class="text-lg font-bold text-gray-900 border-b border-gray-300 pb-1 mb-3">SKILLS</h2>
+            <p class="text-gray-700">{{ resume.skills }}</p>
+        </div>
+        
+        <!-- Education -->
+        {% if resume.education.all %}
+            <div class="mb-6">
+                <h2 class="text-lg font-bold text-gray-900 border-b border-gray-300 pb-1 mb-3">EDUCATION</h2>
+                {% for education in resume.education.all %}
+                    <div class="mb-3">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-semibold text-gray-900">{{ education.degree }}</h3>
+                                <p class="text-gray-700">{{ education.institution }}</p>
+                                {% if education.field_of_study %}
+                                    <p class="text-gray-600">{{ education.field_of_study }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="text-right text-gray-600">
+                                <p>{{ education.start_date|date:"M Y" }} - {% if education.is_current %}Present{% else %}{{ education.end_date|date:"M Y" }}{% endif %}</p>
+                                {% if education.grade %}
+                                    <p>{{ education.grade }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if education.description %}
+                            <p class="text-gray-700 mt-1">{{ education.description }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <!-- Work Experience -->
+        {% if resume.work_experience.all %}
+            <div class="mb-6">
+                <h2 class="text-lg font-bold text-gray-900 border-b border-gray-300 pb-1 mb-3">WORK EXPERIENCE</h2>
+                {% for work in resume.work_experience.all %}
+                    <div class="mb-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-semibold text-gray-900">{{ work.position }}</h3>
+                                <p class="text-gray-700">{{ work.company }}{% if work.location %}, {{ work.location }}{% endif %}</p>
+                            </div>
+                            <div class="text-right text-gray-600">
+                                <p>{{ work.start_date|date:"M Y" }} - {% if work.is_current %}Present{% else %}{{ work.end_date|date:"M Y" }}{% endif %}</p>
+                            </div>
+                        </div>
+                        <div class="text-gray-700 mt-2 whitespace-pre-line">{{ work.description }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <!-- Extracurricular Activities -->
+        {% if resume.extracurricular_activities.all %}
+            <div class="mb-6">
+                <h2 class="text-lg font-bold text-gray-900 border-b border-gray-300 pb-1 mb-3">EXTRACURRICULAR ACTIVITIES</h2>
+                {% for activity in resume.extracurricular_activities.all %}
+                    <div class="mb-3">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-semibold text-gray-900">{{ activity.title }}</h3>
+                                {% if activity.organization %}
+                                    <p class="text-gray-700">{{ activity.organization }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="text-right text-gray-600">
+                                <p>{{ activity.start_date|date:"M Y" }} - {% if activity.is_current %}Present{% else %}{{ activity.end_date|date:"M Y" }}{% endif %}</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-700 mt-1">{{ activity.description }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="text-center mt-6">
+        <a href="{% url 'resumes:download_pdf' resume.id %}" 
+           class="bg-primary text-white px-6 py-2 rounded-md hover:bg-indigo-600 mr-4">
+            Download PDF
+        </a>
+        <a href="{% url 'resumes:detail' resume.id %}" 
+           class="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600">
+            Back to Resume
+        </a>
+    </div>
+</div>
+{% endblock %}

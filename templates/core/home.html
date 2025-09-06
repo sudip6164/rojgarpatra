@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}RojgarPatra - Professional Resume Builder{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-indigo-50 to-white">
+    <!-- Hero Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="text-center">
+            <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+                Build Your Perfect
+                <span class="text-primary">Resume</span>
+            </h1>
+            <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                Create professional, ATS-friendly resumes in minutes. Our intuitive builder helps you showcase your skills and experience to land your dream job.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'core:dashboard' %}" 
+                       class="bg-primary text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-indigo-600 transition duration-200">
+                        Go to Dashboard
+                    </a>
+                    <a href="{% url 'resumes:create' %}" 
+                       class="bg-accent text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-600 transition duration-200">
+                        Create New Resume
+                    </a>
+                {% else %}
+                    <a href="{% url 'accounts:register' %}" 
+                       class="bg-primary text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-indigo-600 transition duration-200">
+                        Get Started Free
+                    </a>
+                    <a href="{% url 'accounts:login' %}" 
+                       class="border-2 border-primary text-primary px-8 py-3 rounded-lg text-lg font-semibold hover:bg-primary hover:text-white transition duration-200">
+                        Sign In
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Features Section -->
+    <div class="bg-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Why Choose RojgarPatra?</h2>
+                <p class="text-lg text-gray-600">Everything you need to create a standout resume</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Professional Templates</h3>
+                    <p class="text-gray-600">Clean, modern resume templates designed by professionals to help you stand out.</p>
+                </div>
+                
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">PDF Export</h3>
+                    <p class="text-gray-600">Download your resume as a high-quality PDF ready for job applications.</p>
+                </div>
+                
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Easy to Use</h3>
+                    <p class="text-gray-600">Intuitive interface that makes creating and editing resumes quick and simple.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CTA Section -->
+    {% if not user.is_authenticated %}
+        <div class="bg-primary py-16">
+            <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-white mb-4">Ready to Build Your Resume?</h2>
+                <p class="text-xl text-indigo-100 mb-8">Join thousands of job seekers who have successfully landed their dream jobs.</p>
+                <a href="{% url 'accounts:register' %}" 
+                   class="bg-white text-primary px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition duration-200">
+                    Start Building Now
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
