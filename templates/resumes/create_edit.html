@@ -120,9 +120,12 @@
             <div class="border-b border-gray-200 pb-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-medium text-gray-900">Education</h3>
-                    <button type="button" id="add-education" class="bg-accent text-white px-3 py-1 rounded-md hover:bg-green-600 text-sm">
-                        Add Education
-                    </button>
+                    <div class="flex items-center gap-3">
+                        <span id="count-education" class="text-xs text-gray-600">0 items</span>
+                        <button type="button" id="add-education" class="bg-accent text-white px-3 py-1 rounded-md hover:bg-green-600 text-sm">
+                            Add Education
+                        </button>
+                    </div>
                 </div>
                 <div id="education-formset">
                     {{ education_formset.management_form }}
@@ -137,7 +140,9 @@
                                 Remove
                             </button>
                             {% for hidden in form.hidden_fields %}
-                                {{ hidden }}
+                                {% if '-DELETE' not in hidden.name %}
+                                    {{ hidden }}
+                                {% endif %}
                             {% endfor %}
                             {% if form.non_field_errors %}
                                 <div class="p-2 mb-3 rounded bg-red-50 text-red-700 border border-red-200">
@@ -189,14 +194,7 @@
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
                                     {{ form.description }}
                                 </div>
-                                {% if not is_create %}
-                                    <div class="md:col-span-2">
-                                        <label class="flex items-center text-red-600">
-                                            {{ form.DELETE }}
-                                            <span class="ml-2 text-sm">Delete this education</span>
-                                        </label>
-                                    </div>
-                                {% endif %}
+                                {# Delete checkbox deliberately hidden; use Remove button instead #}
                             </div>
                         </div>
                     {% endfor %}
@@ -207,9 +205,12 @@
             <div class="border-b border-gray-200 pb-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-medium text-gray-900">Work Experience</h3>
-                    <button type="button" id="add-work" class="bg-accent text-white px-3 py-1 rounded-md hover:bg-green-600 text-sm">
-                        Add Experience
-                    </button>
+                    <div class="flex items-center gap-3">
+                        <span id="count-work" class="text-xs text-gray-600">0 items</span>
+                        <button type="button" id="add-work" class="bg-accent text-white px-3 py-1 rounded-md hover:bg-green-600 text-sm">
+                            Add Experience
+                        </button>
+                    </div>
                 </div>
                 <div id="work-formset">
                     {{ work_formset.management_form }}
@@ -224,7 +225,9 @@
                                 Remove
                             </button>
                             {% for hidden in form.hidden_fields %}
-                                {{ hidden }}
+                                {% if '-DELETE' not in hidden.name %}
+                                    {{ hidden }}
+                                {% endif %}
                             {% endfor %}
                             {% if form.non_field_errors %}
                                 <div class="p-2 mb-3 rounded bg-red-50 text-red-700 border border-red-200">
@@ -276,14 +279,7 @@
                                         <p class="text-red-600 text-sm mt-1">{{ form.description.errors.0 }}</p>
                                     {% endif %}
                                 </div>
-                                {% if not is_create %}
-                                    <div class="md:col-span-2">
-                                        <label class="flex items-center text-red-600">
-                                            {{ form.DELETE }}
-                                            <span class="ml-2 text-sm">Delete this experience</span>
-                                        </label>
-                                    </div>
-                                {% endif %}
+                                {# Delete checkbox deliberately hidden; use Remove button instead #}
                             </div>
                         </div>
                     {% endfor %}
@@ -294,9 +290,12 @@
             <div class="pb-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-medium text-gray-900">Extracurricular Activities</h3>
-                    <button type="button" id="add-activity" class="bg-accent text-white px-3 py-1 rounded-md hover:bg-green-600 text-sm">
-                        Add Activity
-                    </button>
+                    <div class="flex items-center gap-3">
+                        <span id="count-activity" class="text-xs text-gray-600">0 items</span>
+                        <button type="button" id="add-activity" class="bg-accent text-white px-3 py-1 rounded-md hover:bg-green-600 text-sm">
+                            Add Activity
+                        </button>
+                    </div>
                 </div>
                 <div id="activity-formset">
                     {{ activity_formset.management_form }}
@@ -311,7 +310,9 @@
                                 Remove
                             </button>
                             {% for hidden in form.hidden_fields %}
-                                {{ hidden }}
+                                {% if '-DELETE' not in hidden.name %}
+                                    {{ hidden }}
+                                {% endif %}
                             {% endfor %}
                             {% if form.non_field_errors %}
                                 <div class="p-2 mb-3 rounded bg-red-50 text-red-700 border border-red-200">
@@ -355,14 +356,7 @@
                                         <p class="text-red-600 text-sm mt-1">{{ form.description.errors.0 }}</p>
                                     {% endif %}
                                 </div>
-                                {% if not is_create %}
-                                    <div class="md:col-span-2">
-                                        <label class="flex items-center text-red-600">
-                                            {{ form.DELETE }}
-                                            <span class="ml-2 text-sm">Delete this activity</span>
-                                        </label>
-                                    </div>
-                                {% endif %}
+                                {# Delete checkbox deliberately hidden; use Remove button instead #}
                             </div>
                         </div>
                     {% endfor %}
@@ -386,6 +380,16 @@
 <script>
 // Dynamic formset handling
 document.addEventListener('DOMContentLoaded', function() {
+    function updateCounters() {
+        const sections = ['education', 'work', 'activity'];
+        sections.forEach(function(type) {
+            const container = document.getElementById(type + '-formset');
+            const counter = document.getElementById('count-' + type);
+            if (!container || !counter) return;
+            const count = container.querySelectorAll('.' + type + '-form')?.length || 0;
+            counter.textContent = count + (count === 1 ? ' item' : ' items');
+        });
+    }
     function getFormsetCtx(type) {
         const container = document.getElementById(type + '-formset');
         if (!container) return null;
@@ -416,8 +420,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const formNum = parseInt(totalInput.value);
         const forms = container.querySelectorAll('.' + formsetType + '-form');
         if (forms.length === 0) return;
-        const lastForm = forms[forms.length - 1];
-        const newForm = lastForm.cloneNode(true);
+        const templateForm = forms[0];
+        const newForm = templateForm.cloneNode(true);
 
         // Replace indices (names, ids, labels)
         const formRegex = new RegExp(prefix + '-(\\d+)-', 'g');
@@ -436,6 +440,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         container.appendChild(newForm);
         totalInput.value = formNum + 1;
+        updateCounters();
+        // brief highlight for feedback
+        newForm.classList.add('ring-2', 'ring-green-300');
+        setTimeout(function(){ newForm.classList.remove('ring-2', 'ring-green-300'); }, 600);
     }
 
     function reindexForms(formsetType) {
@@ -455,12 +463,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // If DELETE checkbox exists (edit view), check it and hide the form
         const deleteInput = formEl.querySelector('input[type="checkbox"][name$="-DELETE"]');
         if (deleteInput) {
+            // For edit screen: mark for deletion AND visually remove
             deleteInput.checked = true;
-            formEl.style.display = 'none';
+            formEl.remove();
         } else {
             formEl.remove();
             reindexForms(formsetType);
         }
+        updateCounters();
     }
 
     // Remove buttons
@@ -479,6 +489,9 @@ document.addEventListener('DOMContentLoaded', function() {
             removeForm(e.target, 'activity');
         }
     });
+
+    // Initialize counters on load
+    updateCounters();
 });
 </script>
 {% endblock %}

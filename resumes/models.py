@@ -68,7 +68,7 @@ class WorkExperience(models.Model):
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
     is_current = models.BooleanField(default=False)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     order = models.PositiveIntegerField(default=0)
     
     class Meta:
@@ -86,7 +86,7 @@ class ExtracurricularActivity(models.Model):
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
     is_current = models.BooleanField(default=False)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     order = models.PositiveIntegerField(default=0)
     
     class Meta:
