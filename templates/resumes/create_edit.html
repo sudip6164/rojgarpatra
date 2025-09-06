@@ -198,6 +198,50 @@
                             </div>
                         </div>
                     {% endfor %}
+                    {# Empty template for adding via JS #}
+                    <template id="education-empty-form">
+                        {% with form=education_formset.empty_form %}
+                        <div class="education-form border border-gray-200 rounded-md p-4 mb-4 relative">
+                            <button type="button" class="absolute top-2 right-2 text-red-600 text-sm js-remove-education" title="Remove">Remove</button>
+                            {% for hidden in form.hidden_fields %}
+                                {% if '-DELETE' not in hidden.name %}{{ hidden }}{% endif %}
+                            {% endfor %}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Institution</label>
+                                    {{ form.institution }}
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Degree</label>
+                                    {{ form.degree }}
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Field of Study</label>
+                                    {{ form.field_of_study }}
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Grade</label>
+                                    {{ form.grade }}
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                                    {{ form.start_date }}
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                                    {{ form.end_date }}
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="flex items-center">{{ form.is_current }}<span class="ml-2 text-sm text-gray-700">Currently studying here</span></label>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                    {{ form.description }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endwith %}
+                    </template>
                 </div>
             </div>
             
@@ -283,6 +327,26 @@
                             </div>
                         </div>
                     {% endfor %}
+                    <template id="work-empty-form">
+                        {% with form=work_formset.empty_form %}
+                        <div class="work-form border border-gray-200 rounded-md p-4 mb-4 relative">
+                            <button type="button" class="absolute top-2 right-2 text-red-600 text-sm js-remove-work" title="Remove">Remove</button>
+                            {% for hidden in form.hidden_fields %}
+                                {% if '-DELETE' not in hidden.name %}{{ hidden }}{% endif %}
+                            {% endfor %}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Company</label>{{ form.company }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Position</label>{{ form.position }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Location</label>{{ form.location }}</div>
+                                <div></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>{{ form.start_date }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>{{ form.end_date }}</div>
+                                <div class="md:col-span-2"><label class="flex items-center">{{ form.is_current }}<span class="ml-2 text-sm text-gray-700">Currently working here</span></label></div>
+                                <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-1">Description</label>{{ form.description }}</div>
+                            </div>
+                        </div>
+                        {% endwith %}
+                    </template>
                 </div>
             </div>
             
@@ -360,6 +424,124 @@
                             </div>
                         </div>
                     {% endfor %}
+                    <template id="activity-empty-form">
+                        {% with form=activity_formset.empty_form %}
+                        <div class="activity-form border border-gray-200 rounded-md p-4 mb-4 relative">
+                            <button type="button" class="absolute top-2 right-2 text-red-600 text-sm js-remove-activity" title="Remove">Remove</button>
+                            {% for hidden in form.hidden_fields %}
+                                {% if '-DELETE' not in hidden.name %}{{ hidden }}{% endif %}
+                            {% endfor %}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Title</label>{{ form.title }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Organization</label>{{ form.organization }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>{{ form.start_date }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>{{ form.end_date }}</div>
+                                <div class="md:col-span-2"><label class="flex items-center">{{ form.is_current }}<span class="ml-2 text-sm text-gray-700">Currently active</span></label></div>
+                                <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-1">Description</label>{{ form.description }}</div>
+                            </div>
+                        </div>
+                        {% endwith %}
+                    </template>
+                </div>
+            </div>
+
+            <!-- Certifications -->
+            <div class="border-b border-gray-200 pb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium text-gray-900">Certifications</h3>
+                    <div class="flex items-center gap-3">
+                        <span id="count-cert" class="text-xs text-gray-600">0 items</span>
+                        <button type="button" id="add-cert" class="bg-accent text-white px-3 py-1 rounded-md hover:bg-green-600 text-sm">Add Certification</button>
+                    </div>
+                </div>
+                <div id="cert-formset">
+                    {{ cert_formset.management_form }}
+                    {% if cert_formset.non_form_errors %}
+                        <div class="p-2 mb-3 rounded bg-red-50 text-red-700 border border-red-200">{{ cert_formset.non_form_errors }}</div>
+                    {% endif %}
+                    {% for form in cert_formset %}
+                        <div class="cert-form border border-gray-200 rounded-md p-4 mb-4 relative">
+                            <button type="button" class="absolute top-2 right-2 text-red-600 text-sm js-remove-cert" title="Remove">Remove</button>
+                            {% for hidden in form.hidden_fields %}{% if '-DELETE' not in hidden.name %}{{ hidden }}{% endif %}{% endfor %}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Title</label>{{ form.title }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Issuer</label>{{ form.issuer }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Issue Date</label>{{ form.issue_date }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Expiration Date</label>{{ form.expiration_date }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Credential ID</label>{{ form.credential_id }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Credential URL</label>{{ form.credential_url }}</div>
+                                <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-1">Description</label>{{ form.description }}</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <template id="cert-empty-form">
+                        {% with form=cert_formset.empty_form %}
+                        <div class="cert-form border border-gray-200 rounded-md p-4 mb-4 relative">
+                            <button type="button" class="absolute top-2 right-2 text-red-600 text-sm js-remove-cert" title="Remove">Remove</button>
+                            {% for hidden in form.hidden_fields %}{% if '-DELETE' not in hidden.name %}{{ hidden }}{% endif %}{% endfor %}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Title</label>{{ form.title }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Issuer</label>{{ form.issuer }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Issue Date</label>{{ form.issue_date }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Expiration Date</label>{{ form.expiration_date }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Credential ID</label>{{ form.credential_id }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Credential URL</label>{{ form.credential_url }}</div>
+                                <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-1">Description</label>{{ form.description }}</div>
+                            </div>
+                        </div>
+                        {% endwith %}
+                    </template>
+                </div>
+            </div>
+
+            <!-- Projects -->
+            <div class="border-b border-gray-200 pb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium text-gray-900">Projects</h3>
+                    <div class="flex items-center gap-3">
+                        <span id="count-project" class="text-xs text-gray-600">0 items</span>
+                        <button type="button" id="add-project" class="bg-accent text-white px-3 py-1 rounded-md hover:bg-green-600 text-sm">Add Project</button>
+                    </div>
+                </div>
+                <div id="project-formset">
+                    {{ project_formset.management_form }}
+                    {% if project_formset.non_form_errors %}
+                        <div class="p-2 mb-3 rounded bg-red-50 text-red-700 border border-red-200">{{ project_formset.non_form_errors }}</div>
+                    {% endif %}
+                    {% for form in project_formset %}
+                        <div class="project-form border border-gray-200 rounded-md p-4 mb-4 relative">
+                            <button type="button" class="absolute top-2 right-2 text-red-600 text-sm js-remove-project" title="Remove">Remove</button>
+                            {% for hidden in form.hidden_fields %}{% if '-DELETE' not in hidden.name %}{{ hidden }}{% endif %}{% endfor %}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Project Name</label>{{ form.name }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Role</label>{{ form.role }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Project URL</label>{{ form.link }}</div>
+                                <div></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>{{ form.start_date }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>{{ form.end_date }}</div>
+                                <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-1">Technologies</label>{{ form.technologies }}</div>
+                                <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-1">Description</label>{{ form.description }}</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <template id="project-empty-form">
+                        {% with form=project_formset.empty_form %}
+                        <div class="project-form border border-gray-200 rounded-md p-4 mb-4 relative">
+                            <button type="button" class="absolute top-2 right-2 text-red-600 text-sm js-remove-project" title="Remove">Remove</button>
+                            {% for hidden in form.hidden_fields %}{% if '-DELETE' not in hidden.name %}{{ hidden }}{% endif %}{% endfor %}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Project Name</label>{{ form.name }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Role</label>{{ form.role }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Project URL</label>{{ form.link }}</div>
+                                <div></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>{{ form.start_date }}</div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>{{ form.end_date }}</div>
+                                <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-1">Technologies</label>{{ form.technologies }}</div>
+                                <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 mb-1">Description</label>{{ form.description }}</div>
+                            </div>
+                        </div>
+                        {% endwith %}
+                    </template>
                 </div>
             </div>
             
@@ -381,7 +563,7 @@
 // Dynamic formset handling
 document.addEventListener('DOMContentLoaded', function() {
     function updateCounters() {
-        const sections = ['education', 'work', 'activity'];
+        const sections = ['education', 'work', 'activity', 'cert', 'project'];
         sections.forEach(function(type) {
             const container = document.getElementById(type + '-formset');
             const counter = document.getElementById('count-' + type);
@@ -412,31 +594,27 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('add-activity').addEventListener('click', function() {
         addFormsetForm('activity');
     });
+    // Add certification form
+    document.getElementById('add-cert').addEventListener('click', function() {
+        addFormsetForm('cert');
+    });
+    // Add project form
+    document.getElementById('add-project').addEventListener('click', function() {
+        addFormsetForm('project');
+    });
     
     function addFormsetForm(formsetType) {
         const ctx = getFormsetCtx(formsetType);
         if (!ctx) return;
         const { container, totalInput, prefix } = ctx;
         const formNum = parseInt(totalInput.value);
-        const forms = container.querySelectorAll('.' + formsetType + '-form');
-        if (forms.length === 0) return;
-        const templateForm = forms[0];
-        const newForm = templateForm.cloneNode(true);
-
-        // Replace indices (names, ids, labels)
-        const formRegex = new RegExp(prefix + '-(\\d+)-', 'g');
-        newForm.innerHTML = newForm.innerHTML.replace(formRegex, prefix + '-' + formNum + '-');
-
-        // Clear input values
-        newForm.querySelectorAll('input, textarea, select').forEach(function(input) {
-            if (/-id$/.test(input.name)) {
-                input.value = '';
-            } else if (input.type === 'checkbox') {
-                input.checked = false;
-            } else {
-                input.value = '';
-            }
-        });
+        const tmpl = document.getElementById(formsetType + '-empty-form');
+        if (!tmpl) return;
+        const wrap = document.createElement('div');
+        // Replace __prefix__ with the new index
+        const html = tmpl.innerHTML.replace(new RegExp(prefix + '-__prefix__-', 'g'), prefix + '-' + formNum + '-');
+        wrap.innerHTML = html.trim();
+        const newForm = wrap.firstElementChild;
 
         container.appendChild(newForm);
         totalInput.value = formNum + 1;
@@ -487,6 +665,16 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('activity-formset').addEventListener('click', function(e) {
         if (e.target.classList.contains('js-remove-activity')) {
             removeForm(e.target, 'activity');
+        }
+    });
+    document.getElementById('cert-formset').addEventListener('click', function(e) {
+        if (e.target.classList.contains('js-remove-cert')) {
+            removeForm(e.target, 'cert');
+        }
+    });
+    document.getElementById('project-formset').addEventListener('click', function(e) {
+        if (e.target.classList.contains('js-remove-project')) {
+            removeForm(e.target, 'project');
         }
     });
 

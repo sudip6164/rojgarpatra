@@ -235,5 +235,55 @@
             {% endfor %}
         </div>
     {% endif %}
+
+    {% if resume.certifications.all %}
+        <div class="section">
+            <div class="section-title">Certifications</div>
+            {% for cert in resume.certifications.all %}
+                <div class="entry">
+                    <div class="flex-container">
+                        <div class="flex-left">
+                            <div class="entry-title">{{ cert.title }}</div>
+                            {% if cert.issuer %}<div class="entry-company">{{ cert.issuer }}</div>{% endif %}
+                            {% if cert.credential_id %}<div class="entry-company">ID: {{ cert.credential_id }}</div>{% endif %}
+                            {% if cert.credential_url %}<div class="entry-company">{{ cert.credential_url }}</div>{% endif %}
+                        </div>
+                        <div class="flex-right">
+                            <div class="entry-date">
+                                {% if cert.issue_date %}{{ cert.issue_date|date:"M Y" }}{% endif %}
+                                {% if cert.expiration_date %}- {{ cert.expiration_date|date:"M Y" }}{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% if cert.description %}<div class="entry-description">{{ cert.description }}</div>{% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if resume.projects.all %}
+        <div class="section">
+            <div class="section-title">Projects</div>
+            {% for project in resume.projects.all %}
+                <div class="entry">
+                    <div class="flex-container">
+                        <div class="flex-left">
+                            <div class="entry-title">{{ project.name }}</div>
+                            {% if project.role %}<div class="entry-company">{{ project.role }}</div>{% endif %}
+                            {% if project.link %}<div class="entry-company">{{ project.link }}</div>{% endif %}
+                            {% if project.technologies %}<div class="entry-company">Tech: {{ project.technologies }}</div>{% endif %}
+                        </div>
+                        <div class="flex-right">
+                            <div class="entry-date">
+                                {% if project.start_date %}{{ project.start_date|date:"M Y" }}{% endif %}
+                                {% if project.end_date %}- {{ project.end_date|date:"M Y" }}{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% if project.description %}<div class="entry-description">{{ project.description }}</div>{% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 </body>
 </html>

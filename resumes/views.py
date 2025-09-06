@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 from .models import Resume
 from .forms import (
     ResumeForm, EducationFormSet, WorkExperienceFormSet, 
-    ExtracurricularActivityFormSet
+    ExtracurricularActivityFormSet, CertificationFormSet, ProjectFormSet
 )
 from .utils import generate_pdf
 
@@ -19,8 +19,17 @@ def create_resume(request):
         education_formset = EducationFormSet(request.POST)
         work_formset = WorkExperienceFormSet(request.POST)
         activity_formset = ExtracurricularActivityFormSet(request.POST)
+        cert_formset = CertificationFormSet(request.POST)
+        project_formset = ProjectFormSet(request.POST)
         
-        if form.is_valid() and education_formset.is_valid() and work_formset.is_valid() and activity_formset.is_valid():
+        if (
+            form.is_valid() and
+            education_formset.is_valid() and
+            work_formset.is_valid() and
+            activity_formset.is_valid() and
+            cert_formset.is_valid() and
+            project_formset.is_valid()
+        ):
             resume = form.save(commit=False)
             resume.user = request.user
             resume.save()
@@ -34,6 +43,12 @@ def create_resume(request):
             activity_formset.instance = resume
             activity_formset.save()
             
+            cert_formset.instance = resume
+            cert_formset.save()
+
+            project_formset.instance = resume
+            project_formset.save()
+            
             messages.success(request, 'Resume created successfully!')
             return redirect('resumes:detail', resume_id=resume.id)
     else:
@@ -41,12 +56,16 @@ def create_resume(request):
         education_formset = EducationFormSet()
         work_formset = WorkExperienceFormSet()
         activity_formset = ExtracurricularActivityFormSet()
+        cert_formset = CertificationFormSet()
+        project_formset = ProjectFormSet()
     
     context = {
         'form': form,
         'education_formset': education_formset,
         'work_formset': work_formset,
         'activity_formset': activity_formset,
+        'cert_formset': cert_formset,
+        'project_formset': project_formset,
         'is_create': True,
     }
     return render(request, 'resumes/create_edit.html', context)
@@ -62,12 +81,23 @@ def edit_resume(request, resume_id):
         education_formset = EducationFormSet(request.POST, instance=resume)
         work_formset = WorkExperienceFormSet(request.POST, instance=resume)
         activity_formset = ExtracurricularActivityFormSet(request.POST, instance=resume)
+        cert_formset = CertificationFormSet(request.POST, instance=resume)
+        project_formset = ProjectFormSet(request.POST, instance=resume)
         
-        if form.is_valid() and education_formset.is_valid() and work_formset.is_valid() and activity_formset.is_valid():
+        if (
+            form.is_valid() and
+            education_formset.is_valid() and
+            work_formset.is_valid() and
+            activity_formset.is_valid() and
+            cert_formset.is_valid() and
+            project_formset.is_valid()
+        ):
             form.save()
             education_formset.save()
             work_formset.save()
             activity_formset.save()
+            cert_formset.save()
+            project_formset.save()
             
             messages.success(request, 'Resume updated successfully!')
             return redirect('resumes:detail', resume_id=resume.id)
@@ -76,12 +106,16 @@ def edit_resume(request, resume_id):
         education_formset = EducationFormSet(instance=resume)
         work_formset = WorkExperienceFormSet(instance=resume)
         activity_formset = ExtracurricularActivityFormSet(instance=resume)
+        cert_formset = CertificationFormSet(instance=resume)
+        project_formset = ProjectFormSet(instance=resume)
     
     context = {
         'form': form,
         'education_formset': education_formset,
         'work_formset': work_formset,
         'activity_formset': activity_formset,
+        'cert_formset': cert_formset,
+        'project_formset': project_formset,
         'resume': resume,
         'is_create': False,
     }

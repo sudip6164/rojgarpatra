@@ -94,3 +94,41 @@ class ExtracurricularActivity(models.Model):
     
     def __str__(self):
         return self.title
+
+
+class Certification(models.Model):
+    """Professional certifications related to a resume"""
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='certifications')
+    title = models.CharField(max_length=200)
+    issuer = models.CharField(max_length=200, blank=True)
+    issue_date = models.DateField(null=True, blank=True)
+    expiration_date = models.DateField(null=True, blank=True)
+    credential_id = models.CharField(max_length=200, blank=True)
+    credential_url = models.URLField(blank=True)
+    description = models.TextField(blank=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order', '-issue_date']
+
+    def __str__(self):
+        return self.title
+
+
+class Project(models.Model):
+    """Projects undertaken by the candidate"""
+    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='projects')
+    name = models.CharField(max_length=200)
+    role = models.CharField(max_length=200, blank=True)
+    link = models.URLField(blank=True)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    description = models.TextField(blank=True)
+    technologies = models.TextField(blank=True, help_text="Comma-separated technologies")
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order', '-start_date']
+
+    def __str__(self):
+        return self.name

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Resume, Education, WorkExperience, ExtracurricularActivity
+from .models import Resume, Education, WorkExperience, ExtracurricularActivity, Certification, Project
 
 
 class EducationInline(admin.TabularInline):
@@ -20,13 +20,25 @@ class ExtracurricularActivityInline(admin.TabularInline):
     ordering = ['order', '-start_date']
 
 
+class CertificationInline(admin.TabularInline):
+    model = Certification
+    extra = 0
+    ordering = ['order', '-issue_date']
+
+
+class ProjectInline(admin.TabularInline):
+    model = Project
+    extra = 0
+    ordering = ['order', '-start_date']
+
+
 @admin.register(Resume)
 class ResumeAdmin(admin.ModelAdmin):
     list_display = ('title', 'full_name', 'user', 'created_at', 'updated_at')
     list_filter = ('created_at', 'updated_at')
     search_fields = ('title', 'full_name', 'user__email')
     readonly_fields = ('id', 'created_at', 'updated_at')
-    inlines = [EducationInline, WorkExperienceInline, ExtracurricularActivityInline]
+    inlines = [EducationInline, WorkExperienceInline, ExtracurricularActivityInline, CertificationInline, ProjectInline]
     
     fieldsets = (
         ('Basic Information', {

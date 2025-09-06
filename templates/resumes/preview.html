@@ -105,6 +105,49 @@
                 {% endfor %}
             </div>
         {% endif %}
+
+        {% if resume.certifications.all %}
+            <div class="mb-6">
+                <h2 class="text-lg font-bold text-gray-900 border-b border-gray-300 pb-1 mb-3">CERTIFICATIONS</h2>
+                {% for cert in resume.certifications.all %}
+                    <div class="mb-3">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-semibold text-gray-900">{{ cert.title }}</h3>
+                                {% if cert.issuer %}<p class="text-gray-700">{{ cert.issuer }}</p>{% endif %}
+                                {% if cert.credential_id %}<p class="text-gray-600 text-sm">ID: {{ cert.credential_id }}</p>{% endif %}
+                            </div>
+                            <div class="text-right text-gray-600">
+                                <p>{% if cert.issue_date %}{{ cert.issue_date|date:"M Y" }}{% endif %}{% if cert.expiration_date %} - {{ cert.expiration_date|date:"M Y" }}{% endif %}</p>
+                            </div>
+                        </div>
+                        {% if cert.description %}<p class="text-gray-700 mt-1">{{ cert.description }}</p>{% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if resume.projects.all %}
+            <div class="mb-6">
+                <h2 class="text-lg font-bold text-gray-900 border-b border-gray-300 pb-1 mb-3">PROJECTS</h2>
+                {% for project in resume.projects.all %}
+                    <div class="mb-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-semibold text-gray-900">{{ project.name }}</h3>
+                                {% if project.role %}<p class="text-gray-700">{{ project.role }}</p>{% endif %}
+                                {% if project.link %}<p class="text-gray-700">{{ project.link }}</p>{% endif %}
+                            </div>
+                            <div class="text-right text-gray-600">
+                                <p>{% if project.start_date %}{{ project.start_date|date:"M Y" }}{% endif %}{% if project.end_date %} - {{ project.end_date|date:"M Y" }}{% endif %}</p>
+                            </div>
+                        </div>
+                        {% if project.technologies %}<p class="text-gray-700 mt-1">Tech: {{ project.technologies }}</p>{% endif %}
+                        {% if project.description %}<div class="text-gray-700 mt-2 whitespace-pre-line">{{ project.description }}</div>{% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
     
     <div class="text-center mt-6">
