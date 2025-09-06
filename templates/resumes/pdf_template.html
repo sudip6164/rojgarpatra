@@ -18,12 +18,13 @@
             margin: 0;
             padding: 0;
         }
+        h1, h2, h3, h4, h5, h6 { margin: 0; padding: 0; }
+        p { margin: 0; padding: 0; }
         
         .header {
             text-align: center;
-            border-bottom: 2px solid #333;
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+            padding-bottom: 10px;
+            margin-bottom: 16px;
         }
         
         .header h1 {
@@ -43,32 +44,28 @@
         }
         
         .section {
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
         
         .section-title {
             font-size: 14px;
             font-weight: bold;
             color: #000;
-            border-bottom: 1px solid #333;
-            padding-bottom: 2px;
-            margin-bottom: 8px;
+            padding-bottom: 0;
+            margin-bottom: 6px;
             text-transform: uppercase;
         }
+
+        /* Horizontal rules using hr (reliable in xhtml2pdf) */
+        hr.rule { border: 0; border-top: 1px solid #333; height: 0; margin: 6px 0 8px 0; }
+        hr.rule-thick { border: 0; border-top: 2px solid #333; height: 0; margin: 8px 0 12px 0; }
         
         .entry {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         
         .entry:last-child {
             margin-bottom: 0;
-        }
-        
-        .entry-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 3px;
         }
         
         .entry-title {
@@ -85,7 +82,6 @@
             font-size: 10px;
             color: #666;
             text-align: right;
-            white-space: nowrap;
         }
         
         .entry-description {
@@ -103,25 +99,10 @@
             margin-left: 15px;
             text-indent: -15px;
         }
-        
-        /* Flexbox alternative for better PDF support */
-        .flex-container {
-            width: 100%;
-            display: table;
-        }
-        
-        .flex-left {
-            display: table-cell;
-            width: 70%;
-            vertical-align: top;
-        }
-        
-        .flex-right {
-            display: table-cell;
-            width: 30%;
-            vertical-align: top;
-            text-align: right;
-        }
+        /* Table-based layout to avoid renderer artifacts */
+        table.row { width: 100%; border: 0; border-collapse: separate; }
+        td.left-col { width: 70%; vertical-align: top; }
+        td.right-col { width: 30%; vertical-align: top; text-align: right; }
     </style>
 </head>
 <body>
@@ -140,10 +121,12 @@
             {% endif %}
         </div>
     </div>
+    <hr class="rule-thick" />
     
     <!-- Skills -->
     <div class="section">
         <div class="section-title">Skills</div>
+        <hr class="rule" />
         <div class="skills-list">
             {% for skill in resume.skills_list %}
                 <span class="bullet-point">• {{ skill }}</span>{% if not forloop.last %}<br>{% endif %}
@@ -155,25 +138,20 @@
     {% if resume.education.all %}
         <div class="section">
             <div class="section-title">Education</div>
+            <hr class="rule" />
             {% for education in resume.education.all %}
                 <div class="entry">
-                    <div class="flex-container">
-                        <div class="flex-left">
+                    <table class="row"><tr>
+                        <td class="left-col">
                             <div class="entry-title">{{ education.degree }}</div>
                             <div class="entry-company">{{ education.institution }}</div>
-                            {% if education.field_of_study %}
-                                <div class="entry-company">{{ education.field_of_study }}</div>
-                            {% endif %}
-                            {% if education.grade %}
-                                <div class="entry-company">Grade: {{ education.grade }}</div>
-                            {% endif %}
-                        </div>
-                        <div class="flex-right">
-                            <div class="entry-date">
-                                {{ education.start_date|date:"M Y" }} - {% if education.is_current %}Present{% else %}{{ education.end_date|date:"M Y" }}{% endif %}
-                            </div>
-                        </div>
-                    </div>
+                            {% if education.field_of_study %}<div class="entry-company">{{ education.field_of_study }}</div>{% endif %}
+                            {% if education.grade %}<div class="entry-company">Grade: {{ education.grade }}</div>{% endif %}
+                        </td>
+                        <td class="right-col">
+                            <div class="entry-date">{{ education.start_date|date:"M Y" }} - {% if education.is_current %}Present{% else %}{{ education.end_date|date:"M Y" }}{% endif %}</div>
+                        </td>
+                    </tr></table>
                     {% if education.description %}
                         <div class="entry-description">{{ education.description }}</div>
                     {% endif %}
@@ -186,19 +164,18 @@
     {% if resume.work_experience.all %}
         <div class="section">
             <div class="section-title">Work Experience</div>
+            <hr class="rule" />
             {% for work in resume.work_experience.all %}
                 <div class="entry">
-                    <div class="flex-container">
-                        <div class="flex-left">
+                    <table class="row"><tr>
+                        <td class="left-col">
                             <div class="entry-title">{{ work.position }}</div>
                             <div class="entry-company">{{ work.company }}{% if work.location %}, {{ work.location }}{% endif %}</div>
-                        </div>
-                        <div class="flex-right">
-                            <div class="entry-date">
-                                {{ work.start_date|date:"M Y" }} - {% if work.is_current %}Present{% else %}{{ work.end_date|date:"M Y" }}{% endif %}
-                            </div>
-                        </div>
-                    </div>
+                        </td>
+                        <td class="right-col">
+                            <div class="entry-date">{{ work.start_date|date:"M Y" }} - {% if work.is_current %}Present{% else %}{{ work.end_date|date:"M Y" }}{% endif %}</div>
+                        </td>
+                    </tr></table>
                     <div class="entry-description">
                         {% for line in work.description|linebreaksbr|split:"<br />" %}
                             {% if line.strip %}
@@ -215,21 +192,18 @@
     {% if resume.extracurricular_activities.all %}
         <div class="section">
             <div class="section-title">Extracurricular Activities</div>
+            <hr class="rule" />
             {% for activity in resume.extracurricular_activities.all %}
                 <div class="entry">
-                    <div class="flex-container">
-                        <div class="flex-left">
+                    <table class="row"><tr>
+                        <td class="left-col">
                             <div class="entry-title">{{ activity.title }}</div>
-                            {% if activity.organization %}
-                                <div class="entry-company">{{ activity.organization }}</div>
-                            {% endif %}
-                        </div>
-                        <div class="flex-right">
-                            <div class="entry-date">
-                                {{ activity.start_date|date:"M Y" }} - {% if activity.is_current %}Present{% else %}{{ activity.end_date|date:"M Y" }}{% endif %}
-                            </div>
-                        </div>
-                    </div>
+                            {% if activity.organization %}<div class="entry-company">{{ activity.organization }}</div>{% endif %}
+                        </td>
+                        <td class="right-col">
+                            <div class="entry-date">{{ activity.start_date|date:"M Y" }} - {% if activity.is_current %}Present{% else %}{{ activity.end_date|date:"M Y" }}{% endif %}</div>
+                        </td>
+                    </tr></table>
                     <div class="entry-description">{{ activity.description }}</div>
                 </div>
             {% endfor %}
@@ -239,22 +213,20 @@
     {% if resume.certifications.all %}
         <div class="section">
             <div class="section-title">Certifications</div>
+            <hr class="rule" />
             {% for cert in resume.certifications.all %}
                 <div class="entry">
-                    <div class="flex-container">
-                        <div class="flex-left">
+                    <table class="row"><tr>
+                        <td class="left-col">
                             <div class="entry-title">{{ cert.title }}</div>
                             {% if cert.issuer %}<div class="entry-company">{{ cert.issuer }}</div>{% endif %}
                             {% if cert.credential_id %}<div class="entry-company">ID: {{ cert.credential_id }}</div>{% endif %}
                             {% if cert.credential_url %}<div class="entry-company">{{ cert.credential_url }}</div>{% endif %}
-                        </div>
-                        <div class="flex-right">
-                            <div class="entry-date">
-                                {% if cert.issue_date %}{{ cert.issue_date|date:"M Y" }}{% endif %}
-                                {% if cert.expiration_date %}- {{ cert.expiration_date|date:"M Y" }}{% endif %}
-                            </div>
-                        </div>
-                    </div>
+                        </td>
+                        <td class="right-col">
+                            <div class="entry-date">{% if cert.issue_date %}{{ cert.issue_date|date:"M Y" }}{% endif %}{% if cert.expiration_date %} - {{ cert.expiration_date|date:"M Y" }}{% endif %}</div>
+                        </td>
+                    </tr></table>
                     {% if cert.description %}<div class="entry-description">{{ cert.description }}</div>{% endif %}
                 </div>
             {% endfor %}
@@ -264,22 +236,20 @@
     {% if resume.projects.all %}
         <div class="section">
             <div class="section-title">Projects</div>
+            <hr class="rule" />
             {% for project in resume.projects.all %}
                 <div class="entry">
-                    <div class="flex-container">
-                        <div class="flex-left">
+                    <table class="row"><tr>
+                        <td class="left-col">
                             <div class="entry-title">{{ project.name }}</div>
                             {% if project.role %}<div class="entry-company">{{ project.role }}</div>{% endif %}
                             {% if project.link %}<div class="entry-company">{{ project.link }}</div>{% endif %}
                             {% if project.technologies %}<div class="entry-company">Tech: {{ project.technologies }}</div>{% endif %}
-                        </div>
-                        <div class="flex-right">
-                            <div class="entry-date">
-                                {% if project.start_date %}{{ project.start_date|date:"M Y" }}{% endif %}
-                                {% if project.end_date %}- {{ project.end_date|date:"M Y" }}{% endif %}
-                            </div>
-                        </div>
-                    </div>
+                        </td>
+                        <td class="right-col">
+                            <div class="entry-date">{% if project.start_date %}{{ project.start_date|date:"M Y" }}{% endif %}{% if project.end_date %} - {{ project.end_date|date:"M Y" }}{% endif %}</div>
+                        </td>
+                    </tr></table>
                     {% if project.description %}<div class="entry-description">{{ project.description }}</div>{% endif %}
                 </div>
             {% endfor %}

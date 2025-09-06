@@ -186,8 +186,14 @@
     </div>
     
     <div class="actions">
-        <a href="{% url 'resumes:download_pdf' resume.id %}" class="btn btn-primary" style="margin-right: 8px;">Download PDF</a>
-        <a href="{% url 'resumes:detail' resume.id %}" class="btn btn-secondary">Back to Resume</a>
+        <a href="{% url 'resumes:download_pdf' resume.id %}"
+           class="inline-flex items-center px-5 py-2 rounded-md font-medium text-white bg-primary hover:bg-indigo-600 mr-2">
+            Download PDF
+        </a>
+        <a href="{% url 'resumes:detail' resume.id %}"
+           class="inline-flex items-center px-5 py-2 rounded-md font-medium text-white bg-gray-600 hover:bg-gray-700">
+            Back to Resume
+        </a>
     </div>
 </div>
 {% endblock %}
