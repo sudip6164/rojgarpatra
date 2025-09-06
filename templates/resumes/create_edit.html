@@ -122,7 +122,10 @@
                 <div id="education-formset">
                     {{ education_formset.management_form }}
                     {% for form in education_formset %}
-                        <div class="education-form border border-gray-200 rounded-md p-4 mb-4">
+                        <div class="education-form border border-gray-200 rounded-md p-4 mb-4 relative">
+                            <button type="button" class="absolute top-2 right-2 text-red-600 text-sm js-remove-education" title="Remove">
+                                Remove
+                            </button>
                             {% for hidden in form.hidden_fields %}
                                 {{ hidden }}
                             {% endfor %}
@@ -187,7 +190,10 @@
                 <div id="work-formset">
                     {{ work_formset.management_form }}
                     {% for form in work_formset %}
-                        <div class="work-form border border-gray-200 rounded-md p-4 mb-4">
+                        <div class="work-form border border-gray-200 rounded-md p-4 mb-4 relative">
+                            <button type="button" class="absolute top-2 right-2 text-red-600 text-sm js-remove-work" title="Remove">
+                                Remove
+                            </button>
                             {% for hidden in form.hidden_fields %}
                                 {{ hidden }}
                             {% endfor %}
@@ -249,7 +255,10 @@
                 <div id="activity-formset">
                     {{ activity_formset.management_form }}
                     {% for form in activity_formset %}
-                        <div class="activity-form border border-gray-200 rounded-md p-4 mb-4">
+                        <div class="activity-form border border-gray-200 rounded-md p-4 mb-4 relative">
+                            <button type="button" class="absolute top-2 right-2 text-red-600 text-sm js-remove-activity" title="Remove">
+                                Remove
+                            </button>
                             {% for hidden in form.hidden_fields %}
                                 {{ hidden }}
                             {% endfor %}
@@ -312,6 +321,12 @@
 <script>
 // Dynamic formset handling
 document.addEventListener('DOMContentLoaded', function() {
+    // Map logical types to Django formset prefixes
+    const PREFIX = {
+        education: 'education_set',
+        work: 'workexperience_set',
+        activity: 'extracurricularactivity_set',
+    };
     // Add education form
     document.getElementById('add-education').addEventListener('click', function() {
         addFormsetForm('education');
@@ -329,33 +344,74 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function addFormsetForm(formsetType) {
         const formsetDiv = document.getElementById(formsetType + '-formset');
-        const totalForms = document.getElementById('id_' + formsetType + '_set-TOTAL_FORMS');
+        const totalForms = document.getElementById('id_' + PREFIX[formsetType] + '-TOTAL_FORMS');
+        if (!formsetDiv || !totalForms) return;
         const formNum = parseInt(totalForms.value);
-        
-        // Clone the last form
-        const lastForm = formsetDiv.querySelector('.' + formsetType + '-form:last-child');
+        const forms = formsetDiv.querySelectorAll('.' + formsetType + '-form');
+        const lastForm = forms[forms.length - 1];
+        if (!lastForm) return;
         const newForm = lastForm.cloneNode(true);
-        
-        // Update form indices
-        const formRegex = new RegExp(formsetType + '_set-(\\d+)-', 'g');
-        newForm.innerHTML = newForm.innerHTML.replace(formRegex, formsetType + '_set-' + formNum + '-');
-        
-        // Clear form values
-        const inputs = newForm.querySelectorAll('input, textarea, select');
-        inputs.forEach(function(input) {
-            if (input.type === 'checkbox') {
+
+        // Replace indices using the Django formset prefix
+        const formRegex = new RegExp(PREFIX[formsetType] + '-(\\d+)-', 'g');
+        newForm.innerHTML = newForm.innerHTML.replace(formRegex, PREFIX[formsetType] + '-' + formNum + '-');
+
+        // Clear input values
+        newForm.querySelectorAll('input, textarea, select').forEach(function(input) {
+            if (input.name && /-id$/.test(input.name)) {
+                input.value = '';
+            } else if (input.type === 'checkbox') {
                 input.checked = false;
             } else {
                 input.value = '';
             }
         });
-        
-        // Append new form
+
         formsetDiv.appendChild(newForm);
-        
-        // Update total forms count
         totalForms.value = formNum + 1;
     }
+
+    function reindexForms(formsetType) {
+        const formsetDiv = document.getElementById(formsetType + '-formset');
+        const totalForms = document.getElementById('id_' + PREFIX[formsetType] + '-TOTAL_FORMS');
+        if (!formsetDiv || !totalForms) return;
+        const forms = formsetDiv.querySelectorAll('.' + formsetType + '-form');
+        forms.forEach(function(formEl, index) {
+            const formRegex = new RegExp(PREFIX[formsetType] + '-(\\d+)-', 'g');
+            formEl.innerHTML = formEl.innerHTML.replace(formRegex, PREFIX[formsetType] + '-' + index + '-');
+        });
+        totalForms.value = forms.length;
+    }
+
+    function removeForm(buttonEl, formsetType) {
+        const formEl = buttonEl.closest('.' + formsetType + '-form');
+        // If DELETE checkbox exists (edit view), check it and hide the form
+        const deleteInput = formEl.querySelector('input[type="checkbox"][name$="-DELETE"]');
+        if (deleteInput) {
+            deleteInput.checked = true;
+            formEl.style.display = 'none';
+        } else {
+            formEl.remove();
+            reindexForms(formsetType);
+        }
+    }
+
+    // Remove buttons
+    document.getElementById('education-formset').addEventListener('click', function(e) {
+        if (e.target.classList.contains('js-remove-education')) {
+            removeForm(e.target, 'education');
+        }
+    });
+    document.getElementById('work-formset').addEventListener('click', function(e) {
+        if (e.target.classList.contains('js-remove-work')) {
+            removeForm(e.target, 'work');
+        }
+    });
+    document.getElementById('activity-formset').addEventListener('click', function(e) {
+        if (e.target.classList.contains('js-remove-activity')) {
+            removeForm(e.target, 'activity');
+        }
+    });
 });
 </script>
 {% endblock %}
